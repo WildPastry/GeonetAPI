@@ -11,13 +11,21 @@ $.ajax({
     type: 'get',
     success: function (keys) {
         console.log('Key loaded...')
-        mapKey = keys[0].GEO_KEY;
+        mapKey = keys[0].GEO_MAP;
+        loadScript();
     },
     error: function (error) {
         console.log(error);
         console.log('Error getting key...')
     }
 })
+
+function loadScript() {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=' + mapKey + '&callback=initMap';
+    document.body.appendChild(script);
+}
 
 // INIT MAP
 function initMap() {
@@ -193,8 +201,6 @@ function initMap() {
             console.log("JSON data loaded...");
             console.log(getData.features);
             for (var i = 0; i < getData.features.length; i++) {
-                // console.log(getData.features[i].geometry.coordinates[1], getData.features[i].geometry.coordinates[0]);
-                // console.log(getData.features[i].properties.locality)
                 var y = getData.features[i].geometry.coordinates[1];
                 var x = getData.features[i].geometry.coordinates[0];
 
@@ -212,7 +218,7 @@ function initMap() {
                     map: map,
                     title: title
                 });
-                
+
                 var contentString =
                     '<div>' +
                     '<h3 class="margin">' + title + '</h3>' +
@@ -222,14 +228,13 @@ function initMap() {
                     '<p>MMI: ' + data4 + '</p>' +
                     '</div>';
 
-                    console.log(title, data1, data2, data3, data4);
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
 
-                    marker.addListener('click', function () {
-                        infowindow.open(map, marker);
-                    });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
             }
         },
         error: function (error) {
