@@ -1,31 +1,33 @@
 /*jslint browser:true */
 console.log('JS Loaded...');
 var mapKey;
-var marker;
 var map;
+var marker = [];
+var contents = [];
+var infowindow = [];
 
 // MAP KEY
-$.ajax({
-    url: 'js/config.json',
-    dataType: 'json',
-    type: 'get',
-    success: function (keys) {
-        console.log('Key loaded...')
-        mapKey = keys[0].GEO_MAP;
-        loadScript();
-    },
-    error: function (error) {
-        console.log(error);
-        console.log('Error getting key...')
-    }
-})
+// $.ajax({
+//     url: 'js/config.json',
+//     dataType: 'json',
+//     type: 'get',
+//     success: function (keys) {
+//         console.log('Key loaded...')
+//         mapKey = keys[0].GEO_MAP;
+//         loadScript();
+//     },
+//     error: function (error) {
+//         console.log(error);
+//         console.log('Error getting key...')
+//     }
+// })
 
-function loadScript() {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=' + mapKey + '&callback=initMap';
-    document.body.appendChild(script);
-}
+// function loadScript() {
+//     var script = document.createElement('script');
+//     script.type = 'text/javascript';
+//     script.src = 'https://maps.googleapis.com/maps/api/js?key=' + mapKey + '&callback=initMap';
+//     document.body.appendChild(script);
+// }
 
 // INIT MAP
 function initMap() {
@@ -210,7 +212,7 @@ function initMap() {
                 var data3 = getData.features[i].properties.magnitude;
                 var data4 = getData.features[i].properties.mmi;
 
-                var marker = new google.maps.Marker({
+                marker[i] = new google.maps.Marker({
                     position: {
                         lat: y,
                         lng: x
@@ -219,7 +221,9 @@ function initMap() {
                     title: title
                 });
 
-                var contentString =
+                marker[i].index = i; 
+
+                contents[i] =
                     '<div>' +
                     '<h3 class="margin">' + title + '</h3>' +
                     '<p>Time: ' + data1 + '</p>' +
@@ -228,13 +232,15 @@ function initMap() {
                     '<p>MMI: ' + data4 + '</p>' +
                     '</div>';
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
+                infowindow[i] = new google.maps.InfoWindow({
+                    content: contents[i]
                 });
 
-                marker.addListener('click', function () {
-                    infowindow.open(map, marker);
-                });
+                google.maps.event.addListener(marker[i], 'click', function() {
+                    console.log(this.index);
+                    infowindow[this.index].open(map,marker[this.index]);
+                    map.panTo(marker[this.index].getPosition());
+                });  
             }
         },
         error: function (error) {
