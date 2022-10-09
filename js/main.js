@@ -16,24 +16,28 @@ document.getElementById('formSub').addEventListener('click', getValues);
 
 // LOAD MAP KEY
 $.ajax({
-    url: 'config.json',
-    dataType: 'json',
-    type: 'get',
-    success: function (keys) {
-      console.log(keys)
-        mapKey = GKEY;
-        loadScript();
-    },
-    error: function (error) {
-        console.log(error);
-    }
-})
+  url: 'config.json',
+  dataType: 'json',
+  async: false,
+  type: 'get',
+  success: function (keys) {
+    console.log(keys);
+    mapKey = GKEY;
+    loadScript();
+  },
+  error: function (error) {
+    console.log(error);
+  },
+});
 
 function loadScript() {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=' + mapKey + '&callback=initMap';
-    document.body.appendChild(script);
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src =
+    'https://maps.googleapis.com/maps/api/js?key=' +
+    mapKey +
+    '&callback=initMap';
+  document.body.appendChild(script);
 }
 
 // INIT MAP
